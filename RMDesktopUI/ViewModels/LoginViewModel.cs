@@ -38,6 +38,21 @@ namespace RMDesktopUI.ViewModels
             }
 		}
 
+        public bool IsErrorVisible => ErrorMessage?.Length > 0;
+
+        private string _errorMessage;
+
+        public string ErrorMessage
+        {
+            get { return _errorMessage; }
+            set
+            {
+                _errorMessage = value;
+                NotifyOfPropertyChange(() => ErrorMessage);
+                NotifyOfPropertyChange(() => IsErrorVisible);
+            }
+        }
+
         public bool CanLogIn
         {
             get
@@ -54,13 +69,14 @@ namespace RMDesktopUI.ViewModels
 
         public async Task LogIn()
         {
+            ErrorMessage = "";
             try
             {
                 var result = await _apiHelper.Authenticate(UserName, Password);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                ErrorMessage = ex.Message;
             }
         }
 	}
